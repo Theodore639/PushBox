@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public GameObject block, dog;    
+    public GameObject block, dog;
     MapData curMapData;
     Block[,] blocks;
     GameObject dogObj;
@@ -31,7 +31,7 @@ public class LevelManager : MonoBehaviour
         maxX = blocks.GetLength(0);
         maxY = blocks.GetLength(1);
         for (int i = 0; i < maxX; i++)
-            for(int j = 0; j < maxY; j++)
+            for (int j = 0; j < maxY; j++)
             {
                 blocks[i, j] = Instantiate(block, transform).GetComponent<Block>();
                 SetPosition(blocks[i, j].transform, i, j);
@@ -43,7 +43,7 @@ public class LevelManager : MonoBehaviour
 
     private void SetPosition(Transform t, int x, int y)
     {
-        t.localPosition = new Vector3(maxX / -2.0f + x - 0.5f, maxY / 2.0f - y, 0) * 1.5f;
+        t.localPosition = new Vector3(maxX / -2.0f + x + 0.5f, maxY / 2.0f - y, 0) * 1.5f;
     }
 
     private void Update()
@@ -68,10 +68,10 @@ public class LevelManager : MonoBehaviour
 
     public void Move(Forward forward)
     {
-        switch(forward)
+        switch (forward)
         {
             case Forward.Left:
-                for(int i = curMapData.x - 1; i >=0; i--)
+                for (int i = curMapData.x - 1; i >= 0; i--)
                 {
                     if (!IsCanThrough(curMapData.mapNode[i, curMapData.y]))
                         break;
@@ -80,7 +80,7 @@ public class LevelManager : MonoBehaviour
                 }
                 break;
             case Forward.Right:
-                for (int i = curMapData.x + 1; i < maxY ; i++)
+                for (int i = curMapData.x + 1; i < maxY; i++)
                 {
                     if (!IsCanThrough(curMapData.mapNode[i, curMapData.y]))
                         break;
@@ -114,13 +114,13 @@ public class LevelManager : MonoBehaviour
     public void CheckLevel()
     {
         bool isComplete = true;
-        for(int i = 0; i < curMapData.mapNode.GetLength(0); i++)
-            for(int j = 0; j < curMapData.mapNode.GetLength(1); j++)
+        for (int i = 0; i < curMapData.mapNode.GetLength(0); i++)
+            for (int j = 0; j < curMapData.mapNode.GetLength(1); j++)
                 if (curMapData.mapNode[i, j] != NodeState.None && !IsCoverd(curMapData.mapNode[i, j]))
                 {
                     isComplete = false;
                 }
-        if(isComplete)
+        if (isComplete)
         {
             LevelComplete();
             return;
@@ -130,7 +130,7 @@ public class LevelManager : MonoBehaviour
         int[] xx = new int[4] { 1, -1, 0, 0 };
         int[] yy = new int[4] { 0, 0, 1, -1 };
         int x, y;
-        for(int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             x = curMapData.x + xx[i];
             y = curMapData.y + yy[i];
@@ -141,7 +141,7 @@ public class LevelManager : MonoBehaviour
             if (IsCanThrough(curMapData.mapNode[x, y]))
                 isFailure = false;
         }
-        if(isFailure)
+        if (isFailure)
         {
             LevelFailur();
         }
