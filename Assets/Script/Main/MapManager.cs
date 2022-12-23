@@ -43,7 +43,24 @@ public class MapManager
             x = 1,
             y = 1
         };
+        mapData = new()
+        {
+            levelId = 0,
+            mapNode = new NodeState[4, 4] {
+                { NodeState.Empty,NodeState.Empty,NodeState.Shadow, NodeState.Empty, },
+                { NodeState.Empty,NodeState.Empty,NodeState.Empty, NodeState.Empty, },
+                { NodeState.Empty,NodeState.Empty,NodeState.Empty, NodeState.Empty, },
+                { NodeState.Empty,NodeState.Shadow,NodeState.Empty, NodeState.Empty, },
+            },
+            x = 1,
+            y = 1
+        };
         mapDataList.Add(mapData);   
+    }
+
+    public static int GetMapCount()
+    {
+        return mapDataList.Count;
     }
 }
 

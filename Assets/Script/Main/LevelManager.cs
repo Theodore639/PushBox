@@ -26,6 +26,8 @@ public class LevelManager : MonoBehaviour
 
     public void InitLevel(int index)
     {
+        TransformUtil.RemoveAllChild(transform);
+
         curMapData = MapManager.GetMapData(index);
         blocks = new Block[curMapData.mapNode.GetLength(0), curMapData.mapNode.GetLength(1)];
         maxX = blocks.GetLength(0);

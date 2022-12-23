@@ -68,6 +68,8 @@
     <Compile Include="Assets\Script\UIForm\LevelSelectForm.cs" />
     <Compile Include="Assets\Script\UIForm\BaseForm.cs" />
     <Compile Include="Assets\Script\Main\UIManager.cs" />
+    <Compile Include="Assets\Script\Util\TransformUtil.cs" />
+    <Compile Include="Assets\Script\UIForm\LevelButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
