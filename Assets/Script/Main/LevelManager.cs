@@ -149,12 +149,12 @@ public class LevelManager : MonoBehaviour
 
     public void LevelComplete()
     {
-
+        UIManager.ShowUIForm(typeof(LevelCompleteForm));
     }
 
     public void LevelFailur()
     {
-
+        UIManager.ShowUIForm(typeof(LevelFailureForm));
     }
 
     public void RestartLevel()
