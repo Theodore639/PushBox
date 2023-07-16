@@ -35,4 +35,19 @@ public class ControllerManager : MonoBehaviour
         return result;
     }
 
+    public void OnColorClick()
+    {
+
+    }
+
+    public void OnBombClick()
+    {
+
+    }
+
+    public void OnRedoClick()
+    {
+
+    }
+
 }

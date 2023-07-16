@@ -16,170 +16,248 @@ public class LevelManager : MonoBehaviour
             return instance;
         }
     }
+    public int score;
 
-    public GameObject block, dog;
-    MapData curMapData;
-    Block[,] blocks;
-    GameObject dogObj;
-    int maxX;
-    int maxY;
+    public List<Sprite> spriteList;
+    public Sprite allColor;
+    public GameObject block;
+    public List<Block> blocks;
+    public MapState mapState;
+    int[,] blockState;
+    int maxX = 5;
+    int maxY = 5;
+    int InitBlockNum = 5;
+    float allColorRate = 0.1f;
 
-    public void InitLevel(int index)
+    private void Awake()
     {
-        TransformUtil.RemoveAllChild(transform);
 
-        curMapData = MapManager.GetMapData(index);
-        blocks = new Block[curMapData.mapNode.GetLength(0), curMapData.mapNode.GetLength(1)];
-        maxX = blocks.GetLength(0);
-        maxY = blocks.GetLength(1);
-        for (int i = 0; i < maxX; i++)
-            for (int j = 0; j < maxY; j++)
-            {
-                blocks[i, j] = Instantiate(block, transform).GetComponent<Block>();
-                SetPosition(blocks[i, j].transform, i, j);
-            }
-        dogObj = Instantiate(dog, transform).gameObject;
-        CoverNode(curMapData.x, curMapData.y);
-        UpdateLevel();
     }
 
-    private void SetPosition(Transform t, int x, int y)
+    public void InitLevel()
     {
-        t.localPosition = new Vector3(maxX / -2.0f + x + 0.5f, maxY / 2.0f - y, 0) * 1.5f;
+        blocks = new List<Block>();
+        blockState = new int[maxX, maxY];
+        score = 0;
+        for (int i = 0; i < InitBlockNum; i++)
+        {
+            CreateRandomBlock();
+        }
+    }
+
+    public void SetPosition(Transform t, int x, int y)
+    {
+        t.localPosition = new Vector3(maxX / -2.0f + x + 0.5f, maxY / 2.0f - y - 0.5f, 0) * 128;
     }
 
     private void Update()
     {
-        Forward f = ControllerManager.Instance.GetCommand();
-        if (f != Forward.None)
+        if (mapState == MapState.Wait)
         {
-            Move(f);
-        }
-    }
-
-    //Õ¹Ê¾levelÍ¼Ïñ
-    private void UpdateLevel()
-    {
-        for (int i = 0; i < maxX; i++)
-            for (int j = 0; j < maxY; j++)
+            Forward f = ControllerManager.Instance.GetCommand();
+            if (f != Forward.None)
             {
-                blocks[i, j].SetState(curMapData.mapNode[i, j]);
+                StartCoroutine(Move(f));
             }
-        SetPosition(dogObj.transform, curMapData.x, curMapData.y);
-    }
-
-    public void Move(Forward forward)
-    {
-        switch (forward)
-        {
-            case Forward.Left:
-                for (int i = curMapData.x - 1; i >= 0; i--)
-                {
-                    if (!IsCanThrough(curMapData.mapNode[i, curMapData.y]))
-                        break;
-                    curMapData.x = i;
-                    CoverNode(i, curMapData.y);
-                }
-                break;
-            case Forward.Right:
-                for (int i = curMapData.x + 1; i < maxY; i++)
-                {
-                    if (!IsCanThrough(curMapData.mapNode[i, curMapData.y]))
-                        break;
-                    curMapData.x = i;
-                    CoverNode(i, curMapData.y);
-                }
-                break;
-            case Forward.Up:
-                for (int j = curMapData.y - 1; j >= 0; j--)
-                {
-                    if (!IsCanThrough(curMapData.mapNode[curMapData.x, j]))
-                        break;
-                    curMapData.y = j;
-                    CoverNode(curMapData.x, j);
-                }
-                break;
-            case Forward.Down:
-                for (int j = curMapData.y + 1; j < maxX; j++)
-                {
-                    if (!IsCanThrough(curMapData.mapNode[curMapData.x, j]))
-                        break;
-                    curMapData.y = j;
-                    CoverNode(curMapData.x, j);
-                }
-                break;
-        }
-        UpdateLevel();
-        CheckLevel();
-    }
-
-    public void CheckLevel()
-    {
-        bool isComplete = true;
-        for (int i = 0; i < curMapData.mapNode.GetLength(0); i++)
-            for (int j = 0; j < curMapData.mapNode.GetLength(1); j++)
-                if (curMapData.mapNode[i, j] != NodeState.None && !IsCoverd(curMapData.mapNode[i, j]))
-                {
-                    isComplete = false;
-                }
-        if (isComplete)
-        {
-            LevelComplete();
-            return;
-        }
-
-        bool isFailure = true;
-        int[] xx = new int[4] { 1, -1, 0, 0 };
-        int[] yy = new int[4] { 0, 0, 1, -1 };
-        int x, y;
-        for (int i = 0; i < 4; i++)
-        {
-            x = curMapData.x + xx[i];
-            y = curMapData.y + yy[i];
-            if (x < 0 || x >= maxX)
-                continue;
-            if (y < 0 || y >= maxY)
-                continue;
-            if (IsCanThrough(curMapData.mapNode[x, y]))
-                isFailure = false;
-        }
-        if (isFailure)
-        {
-            LevelFailur();
         }
     }
 
-    public void LevelComplete()
+    IEnumerator Move(Forward forward)
     {
-        UIManager.ShowUIForm(typeof(LevelCompleteForm));
+        if (MoveMap(forward))
+        {
+            mapState = MapState.Moving;
+            yield return new WaitForSeconds(CONST.MoveAnimationTime);
+        }
+
+        if (CheckMap())
+        {
+            mapState = MapState.Cleaning;
+            yield return new WaitForSeconds(CONST.ClearAnimationTime);
+        }
+        mapState = MapState.Spwaning;
+        CreateRandomBlock();
+        yield return new WaitForSeconds(CONST.SpwanAnimationTime);
+        if (CheckMap())
+        {
+            mapState = MapState.Cleaning;
+            yield return new WaitForSeconds(CONST.ClearAnimationTime);
+        }
+        mapState = MapState.Wait;
+        yield return 0;
+    }
+
+    private bool MoveMap(Forward forward)
+    {
+        bool isMoving = false;
+        foreach (Block block in blocks)
+        {
+            int count = 0;
+            switch (forward)
+            {
+                case Forward.Left:
+                    for (int i = block.x - 1; i >= 0; i--)
+                    {
+                        if (blockState[i, block.y] == 0)
+                            count++;
+                    }
+                    block.MoveTo(block.x - count, block.y);
+                    break;
+                case Forward.Right:
+                    for (int i = block.x + 1; i < maxX; i++)
+                    {
+                        if (blockState[i, block.y] == 0)
+                            count++;
+                    }
+                    block.MoveTo(block.x + count, block.y);
+                    break;
+                case Forward.Up:
+                    for (int i = block.y - 1; i >= 0; i--)
+                    {
+                        if (blockState[block.x, i] == 0)
+                            count++;
+                    }
+                    block.MoveTo(block.x, block.y - count);
+                    break;
+                case Forward.Down:
+                    for (int i = block.y + 1; i < maxY; i++)
+                    {
+                        if (blockState[block.x, i] == 0)
+                            count++;
+                    }
+                    block.MoveTo(block.x, block.y + count);
+                    break;
+            }
+            if (count > 0)
+                isMoving = true;
+        }
+        if (isMoving)
+        {
+            for (int i = 0; i < maxX; i++)
+                for (int j = 0; j < maxY; j++)
+                    blockState[i, j] = 0;
+            foreach (Block block in blocks)
+                blockState[block.x, block.y] = 1;
+        }
+        return isMoving;
+    }
+
+    public bool CheckMap()
+    {
+        int scorePoint = 0;
+        bool isClear = false;
+        foreach (Block block in blocks)
+        {
+            CheckBlock(block);
+        }
+        List<Block> clearList = new List<Block>();
+        foreach (Block block in blocks)
+        {
+            if (blockState[block.x, block.y] > 1)
+            {
+                scorePoint += blockState[block.x, block.y] - 1;
+                if (blockState[block.x, block.y] >= 3)
+                    scorePoint += 2;
+                clearList.Add(block);
+                blockState[block.x, block.y] = 0;
+                isClear = true;
+            }
+        }
+        for (int i = clearList.Count - 1; i >= 0; i--)
+        {
+            clearList[i].Clear();
+        }
+        return isClear;
+    }
+
+    private void CheckBlock(Block block)
+    {
+        int x = block.x;
+        int y = block.y;
+        Block blockA, blockB;
+        if (x > 0 && x < maxX - 1)
+        {
+            blockA = FindBlock(x - 1, y);
+            blockB = FindBlock(x + 1, y);
+            if (blockA != null && blockB != null && CheckColor(block, blockA) && CheckColor(block, blockB) && CheckColor(blockA, blockB))
+            {
+                blockState[block.x, block.y]++;
+                blockState[blockA.x, blockA.y]++;
+                blockState[blockB.x, blockB.y]++;
+            }
+        }
+        if (y > 0 && y < maxY - 1)
+        {
+            blockA = FindBlock(x, y - 1);
+            blockB = FindBlock(x, y + 1);
+            if (blockA != null && blockB != null && CheckColor(block, blockA) && CheckColor(block, blockB) && CheckColor(blockA, blockB))
+            {
+                blockState[block.x, block.y]++;
+                blockState[blockA.x, blockA.y]++;
+                blockState[blockB.x, blockB.y]++;
+            }
+        }
+    }
+
+    private bool CheckColor(Block a, Block b)
+    {
+        if (a.color == BlockColor.AllColor || b.color == BlockColor.AllColor)
+            return true;
+        return a.color == b.color;
     }
 
     public void LevelFailur()
     {
-        UIManager.ShowUIForm(typeof(LevelFailureForm));
+
     }
 
-    public void RestartLevel()
+    public void ReDo()
     {
 
     }
 
-    private bool IsCanThrough(NodeState nodeState)
+    private Block FindBlock(int x, int y)
     {
-        return nodeState == NodeState.Empty || nodeState == NodeState.Shadow || nodeState == NodeState.CoveredShadow;
+        return blocks.Find(block => block.x == x && block.y == y);
     }
 
-    private bool IsCoverd(NodeState nodeState)
+    private void CreateRandomBlock()
     {
-        return nodeState == NodeState.Covered || nodeState == NodeState.CoveredShadow;
+        Block b = Instantiate(block, transform).GetComponent<Block>();
+        int x = 0;
+        int y = 0;
+        GetRandomEmptyPosition(ref x, ref y);
+        b.OnSpwan(GetRandomColor(), x, y);
+        blockState[x, y] = 1;
+        blocks.Add(b);
     }
 
-    private void CoverNode(int x, int y)
+    private BlockColor GetRandomColor()
     {
-        if (curMapData.mapNode[x, y] == NodeState.Empty)
-            curMapData.mapNode[x, y] = NodeState.Covered;
-        if (curMapData.mapNode[x, y] == NodeState.Shadow)
-            curMapData.mapNode[x, y] = NodeState.CoveredShadow;
+        if (Random.Range(0, 1.0f) < allColorRate)
+            return BlockColor.AllColor;
+        return (BlockColor)Random.Range(0, (int)BlockColor.ColorEnd);
     }
+
+    private void GetRandomEmptyPosition(ref int x, ref int y)
+    {
+        List<int> result = new List<int>();
+        for (int i = 0; i < maxX; i++)
+            for (int j = 0; j < maxY; j++)
+            {
+                if (blockState[i, j] == 0)
+                {
+                    result.Add(i * maxY + j);
+                }
+            }
+        if (result.Count > 0)
+        {
+            int r = result[Random.Range(0, result.Count)];
+            x = r / maxY;
+            y = r % maxY;
+        }
+
+    }
+
 
 }
