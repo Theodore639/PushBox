@@ -22,12 +22,15 @@ public class LevelManager : MonoBehaviour
     public Sprite allColor;
     public GameObject block;
     public List<Block> blocks;
+    public List<Block> hintBlocks;
     public MapState mapState;
     int[,] blockState;//0空，非0，用于计算分数
-    public int MaxX = 5;
-    public int MaxY = 5;
+    public static int MaxX = 5;
+    public static int MaxY = 5;
     int InitBlockNum = 5;
-    float allColorRate = 0.1f;
+    float allColorRate = 0.05f;
+    float hintTime = 5;
+    float hintDeltaTime = 0;
 
     public void InitLevel()
     {
@@ -49,10 +52,19 @@ public class LevelManager : MonoBehaviour
     {
         if (mapState == MapState.Wait)
         {
+            hintDeltaTime += Time.deltaTime;
             Forward f = ControllerManager.Instance.GetCommand();
             if (f != Forward.None)
             {
                 StartCoroutine(Move(f));
+            }
+            if (hintDeltaTime > hintTime)
+            {
+                hintDeltaTime = 0;
+                foreach (Block block in hintBlocks)
+                {
+                    block.animator.Play("Hint");
+                }
             }
         }
     }
@@ -80,6 +92,8 @@ public class LevelManager : MonoBehaviour
                 }
             }
             mapState = MapState.Wait;
+            hintBlocks = MapHelper.PredictionMap(blocks);
+            hintDeltaTime = 0;
         }
         yield return 0;
     }
@@ -136,6 +150,7 @@ public class LevelManager : MonoBehaviour
             foreach (Block block in blocks)
                 blockState[block.x, block.y] = 1;
             ControllerManager.Instance.SetRedoActive(true);
+
         }
         return isMoving;
     }

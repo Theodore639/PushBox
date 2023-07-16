@@ -18,7 +18,7 @@ public class DragColor : DragItem
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(rotation);
+        //transform.Rotate(rotation);
     }
 
     public override void DargUpdate(Vector3 position)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,8 @@ public class Block : MonoBehaviour
     public GameObject bombObj, colorObj;
     public float distance;//用于计算与拖动时与手指之间的距离
     public int x, y;
-    Image image;
-
-    public void Awake()
-    {
-        image = GetComponent<Image>();
-    }
+    public Image image;
+    public Animator animator;
 
     public void OnSpwan(BlockColor _color, int _x, int _y)
     {
@@ -66,7 +63,6 @@ public class Block : MonoBehaviour
 
     public void ShowBomb(bool isShow)
     {
-        SetAlpha(isShow ? 0 : 1);
         bombObj.gameObject.SetActive(isShow);
     }
 
@@ -82,6 +78,6 @@ public class Block : MonoBehaviour
 
     private void ShowClearAnimation()
     {
-        iTween.ScaleTo(gameObject, Vector3.zero, CONST.SpwanAnimationTime);
+        animator.Play("Clear");
     }
 }

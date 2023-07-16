@@ -644,7 +644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {fileID: 401701319126378765}
   bomb: {fileID: 4736810031891681912}
-  redoButton: {fileID: 0}
+  redoButton: {fileID: 5341665105115624315}
   colorRect: {fileID: 7130835411127843479}
   bombRect: {fileID: 4417448358246830942}
 --- !u!1 &94292604681065478

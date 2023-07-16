@@ -6,7 +6,7 @@ public class CONST
 {
     public const float SpwanAnimationTime = 0.3f;
     public const float MoveAnimationTime = 0.3f;
-    public const float ClearAnimationTime = 0.5f;
+    public const float ClearAnimationTime = 0.7f;
 }
 
 public enum BlockColor
