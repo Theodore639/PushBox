@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -68,22 +68,24 @@ public class LevelManager : MonoBehaviour
         {
             mapState = MapState.Moving;
             yield return new WaitForSeconds(CONST.MoveAnimationTime);
+            if (CheckMap())
+            {
+                mapState = MapState.Cleaning;
+                yield return new WaitForSeconds(CONST.ClearAnimationTime);
+            }
+            else
+            {
+                mapState = MapState.Spwaning;
+                CreateRandomBlock();
+                yield return new WaitForSeconds(CONST.SpwanAnimationTime);
+                if (CheckMap())
+                {
+                    mapState = MapState.Cleaning;
+                    yield return new WaitForSeconds(CONST.ClearAnimationTime);
+                }
+            }
+            mapState = MapState.Wait;
         }
-
-        if (CheckMap())
-        {
-            mapState = MapState.Cleaning;
-            yield return new WaitForSeconds(CONST.ClearAnimationTime);
-        }
-        mapState = MapState.Spwaning;
-        CreateRandomBlock();
-        yield return new WaitForSeconds(CONST.SpwanAnimationTime);
-        if (CheckMap())
-        {
-            mapState = MapState.Cleaning;
-            yield return new WaitForSeconds(CONST.ClearAnimationTime);
-        }
-        mapState = MapState.Wait;
         yield return 0;
     }
 
@@ -142,6 +144,10 @@ public class LevelManager : MonoBehaviour
         return isMoving;
     }
 
+    /// <summary>
+    /// 检查是否有可消除的block
+    /// </summary>
+    /// <returns></returns>
     public bool CheckMap()
     {
         int scorePoint = 0;

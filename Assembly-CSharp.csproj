@@ -59,7 +59,7 @@
     <Compile Include="Assets\Script\UIForm\MainForm.cs" />
     <Compile Include="Assets\Script\Main\ControllerManager.cs" />
     <Compile Include="Assets\Script\Main\MapManager.cs" />
-    <Compile Include="Assets\Script\Main\Block.cs" />
+    <Compile Include="Assets\Script\Main\Item\Block.cs" />
     <Compile Include="Assets\Script\Main\LevelManager.cs" />
     <Compile Include="Assets\Script\Plugins\iTween.cs" />
     <Compile Include="Assets\Script\Define\Define.cs" />
@@ -69,6 +69,9 @@
     <Compile Include="Assets\Script\UIForm\LevelFailureForm.cs" />
     <Compile Include="Assets\Script\Main\UIManager.cs" />
     <Compile Include="Assets\Script\UIForm\LevelCompleteForm.cs" />
+    <Compile Include="Assets\Script\Main\Item\DragItem.cs" />
+    <Compile Include="Assets\Script\Main\Item\DragColor.cs" />
+    <Compile Include="Assets\Script\Main\Item\DragBomb.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GUIPackCartoon\Demo\Fonts\BPreplay - OFL.txt" />
