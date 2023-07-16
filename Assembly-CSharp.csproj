@@ -72,6 +72,7 @@
     <Compile Include="Assets\Script\Main\Item\DragColor.cs" />
     <Compile Include="Assets\Script\Main\Item\DragBomb.cs" />
     <Compile Include="Assets\Script\Main\Helper\MapHelper.cs" />
+    <Compile Include="Assets\Script\Main\Helper\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GUIPackCartoon\Demo\Fonts\BPreplay - OFL.txt" />

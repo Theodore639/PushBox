@@ -47,7 +47,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         {
             //设置图片的ugui坐标与鼠标的ugui坐标保持不变
             imgRect.anchoredPosition = offset + uguiPos;
-            DargUpdate(imgRect.anchoredPosition);
+            DargUpdate(imgRect.position);
         }
     }
 
@@ -64,7 +64,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         offset = Vector2.zero;
     }
 
-    public virtual void DargUpdate(Vector2 position)
+    public virtual void DargUpdate(Vector3 position)
     { }
 
     public virtual void EndDrag()

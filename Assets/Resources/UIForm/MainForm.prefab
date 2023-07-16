@@ -644,8 +644,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {fileID: 401701319126378765}
   bomb: {fileID: 4736810031891681912}
-  colorRect: {fileID: 0}
-  bombRect: {fileID: 0}
+  redoButton: {fileID: 0}
+  colorRect: {fileID: 7130835411127843479}
+  bombRect: {fileID: 4417448358246830942}
 --- !u!1 &94292604681065478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1453,7 +1454,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 2811378087126646870}
   m_OnClick:
     m_PersistentCalls:
@@ -1547,7 +1548,7 @@ GameObject:
   - component: {fileID: 4417448358246830942}
   - component: {fileID: 3155691439177754999}
   - component: {fileID: 2746836128553200345}
-  - component: {fileID: 2522290987668249228}
+  - component: {fileID: 6591650100976906534}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -1613,7 +1614,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2522290987668249228
+--- !u!114 &6591650100976906534
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1622,7 +1623,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4736810031891681912}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d72c9c7622d4e5c46a4356c98d0d9820, type: 3}
+  m_Script: {fileID: 11500000, guid: aa5ac38a51cec7a41a679bc54f865ab2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5051558891916844028
@@ -1760,8 +1761,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

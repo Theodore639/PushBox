@@ -23,16 +23,16 @@ public class LevelManager : MonoBehaviour
     public GameObject block;
     public List<Block> blocks;
     public MapState mapState;
-    int[,] blockState;
-    int maxX = 5;
-    int maxY = 5;
+    int[,] blockState;//0空，非0，用于计算分数
+    public int MaxX = 5;
+    public int MaxY = 5;
     int InitBlockNum = 5;
     float allColorRate = 0.1f;
 
     public void InitLevel()
     {
         blocks = new List<Block>();
-        blockState = new int[maxX, maxY];
+        blockState = new int[MaxX, MaxY];
         score = 0;
         for (int i = 0; i < InitBlockNum; i++)
         {
@@ -42,7 +42,7 @@ public class LevelManager : MonoBehaviour
 
     public void SetPosition(Transform t, int x, int y)
     {
-        t.localPosition = new Vector3(maxX / -2.0f + x + 0.5f, maxY / 2.0f - y - 0.5f, 0) * 128;
+        t.localPosition = new Vector3(MaxX / -2.0f + x + 0.5f, MaxY / 2.0f - y - 0.5f, 0) * 128;
     }
 
     private void Update()
@@ -101,7 +101,7 @@ public class LevelManager : MonoBehaviour
                     block.MoveTo(block.x - count, block.y);
                     break;
                 case Forward.Right:
-                    for (int i = block.x + 1; i < maxX; i++)
+                    for (int i = block.x + 1; i < MaxX; i++)
                     {
                         if (blockState[i, block.y] == 0)
                             count++;
@@ -117,7 +117,7 @@ public class LevelManager : MonoBehaviour
                     block.MoveTo(block.x, block.y - count);
                     break;
                 case Forward.Down:
-                    for (int i = block.y + 1; i < maxY; i++)
+                    for (int i = block.y + 1; i < MaxY; i++)
                     {
                         if (blockState[block.x, i] == 0)
                             count++;
@@ -130,11 +130,12 @@ public class LevelManager : MonoBehaviour
         }
         if (isMoving)
         {
-            for (int i = 0; i < maxX; i++)
-                for (int j = 0; j < maxY; j++)
+            for (int i = 0; i < MaxX; i++)
+                for (int j = 0; j < MaxY; j++)
                     blockState[i, j] = 0;
             foreach (Block block in blocks)
                 blockState[block.x, block.y] = 1;
+            ControllerManager.Instance.SetRedoActive(true);
         }
         return isMoving;
     }
@@ -177,7 +178,7 @@ public class LevelManager : MonoBehaviour
         int x = block.x;
         int y = block.y;
         Block blockA, blockB;
-        if (x > 0 && x < maxX - 1)
+        if (x > 0 && x < MaxX - 1)
         {
             blockA = FindBlock(x - 1, y);
             blockB = FindBlock(x + 1, y);
@@ -188,7 +189,7 @@ public class LevelManager : MonoBehaviour
                 blockState[blockB.x, blockB.y]++;
             }
         }
-        if (y > 0 && y < maxY - 1)
+        if (y > 0 && y < MaxY - 1)
         {
             blockA = FindBlock(x, y - 1);
             blockB = FindBlock(x, y + 1);
@@ -232,41 +233,87 @@ public class LevelManager : MonoBehaviour
     private void GetRandomEmptyPosition(ref int x, ref int y)
     {
         List<int> result = new List<int>();
-        for (int i = 0; i < maxX; i++)
-            for (int j = 0; j < maxY; j++)
+        for (int i = 0; i < MaxX; i++)
+            for (int j = 0; j < MaxY; j++)
             {
                 if (blockState[i, j] == 0)
                 {
-                    result.Add(i * maxY + j);
+                    result.Add(i * MaxY + j);
                 }
             }
         if (result.Count > 0)
         {
             int r = result[Random.Range(0, result.Count)];
-            x = r / maxY;
-            y = r % maxY;
+            x = r / MaxY;
+            y = r % MaxY;
         }
 
     }
     #endregion
 
     #region 道具逻辑
-    public void ColorDragUpdate(Vector2 position)
-    {
 
+    Block colorBlock;
+    List<Block> bombBlock;
+
+    public void ColorDragUpdate(Vector3 position)
+    {
+        colorBlock = MapHelper.FindColorBlock(blocks, position);
+        if (colorBlock != null)
+        {
+            colorBlock.ShowColor(true);
+        }
+        else
+        {
+            foreach (Block b in blocks)
+            {
+                b.ShowColor(false);
+            }
+        }
     }
 
     public void ColorDragEnd()
     {
-
+        if (colorBlock != null)
+        {
+            colorBlock.ChangeToColor();
+            if (CheckMap())
+            {
+                mapState = MapState.Cleaning;
+                Timer.Schedule(this, CONST.ClearAnimationTime, () =>
+                {
+                    mapState = MapState.Wait;
+                });
+            }
+            ControllerManager.Instance.SetRedoActive(false);
+        }
+        ControllerManager.Instance.color.transform.localPosition = Vector3.zero;
     }
 
     public void BombDragUpdate(Vector3 position)
     {
-
+        bombBlock = MapHelper.FindBombBlock(blocks, position);
+        foreach (Block block in blocks)
+        {
+            block.ShowBomb(bombBlock.Contains(block));
+        }
     }
 
     public void BombDragEnd()
+    {
+        if (bombBlock != null && bombBlock.Count > 0)
+        {
+            foreach (Block block in bombBlock)
+            {
+                block.ChangeToBomb();
+                blockState[block.x, block.y] = 0;
+            }
+            ControllerManager.Instance.SetRedoActive(false);
+        }
+        ControllerManager.Instance.bomb.transform.localPosition = Vector3.zero;
+    }
+
+    public void ReDo()
     {
 
     }
@@ -278,12 +325,7 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    public void ReDo()
-    {
-
-    }
-
-    private Block FindBlock(int x, int y)
+    public Block FindBlock(int x, int y)
     {
         return blocks.Find(block => block.x == x && block.y == y);
     }

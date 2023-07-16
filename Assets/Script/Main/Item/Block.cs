@@ -45,6 +45,19 @@ public class Block : MonoBehaviour
         iTween.MoveFrom(gameObject, oldPosition, CONST.MoveAnimationTime);
     }
 
+    public void ChangeToColor()
+    {
+        color = BlockColor.AllColor;
+        image.sprite = LevelManager.Instance.allColor;
+        ShowColor(false);
+    }
+
+    public void ChangeToBomb()
+    {
+        Clear();
+        ShowBomb(false);
+    }
+
     public void ShowColor(bool isShow)
     {
         SetAlpha(isShow ? 0 : 1);

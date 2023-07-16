@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ControllerManager : MonoBehaviour
 {
     public GameObject color, bomb;
-    GameObject tempTools;//¡Ÿ ±µ¿æﬂ
+    public Button redoButton;
     public Transform colorRect, bombRect;
 
     private static ControllerManager instance;
@@ -62,6 +63,12 @@ public class ControllerManager : MonoBehaviour
     public void OnRedoClick()
     {
 
+    }
+
+    public void SetRedoActive(bool isActive)
+    {
+        redoButton.interactable = isActive;
+        redoButton.transform.Find("Redo").GetComponent<Image>().color = new Color(1, 1, 1, isActive ? 1 : 0.5f);
     }
 
 }

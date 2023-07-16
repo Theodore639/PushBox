@@ -20,7 +20,7 @@ public enum BlockColor
     ColorEnd = 5,
     None = 100,//¿Õ
     AllColor = 101,//²ÊÉ«
-    Obstarct = 102,//ÕÏ°­Îï
+    Bomb = 102,//Õ¨µ¯
 }
 
 public enum MapState

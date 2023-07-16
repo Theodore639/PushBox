@@ -1,18 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DragBomb : MonoBehaviour
+public class DragBomb : DragItem
 {
+    Image image;
     // Start is called before the first frame update
     void Start()
     {
-        
+        image = GetComponent<Image>();
+        Init();
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void DargUpdate(Vector3 position)
     {
-        
+        base.DargUpdate(position);
+        LevelManager.Instance.BombDragUpdate(position);
+    }
+
+    public override void EndDrag()
+    {
+        base.EndDrag();
+        LevelManager.Instance.BombDragEnd();
     }
 }

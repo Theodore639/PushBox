@@ -21,7 +21,7 @@ public class DragColor : DragItem
         transform.Rotate(rotation);
     }
 
-    public override void DargUpdate(Vector2 position)
+    public override void DargUpdate(Vector3 position)
     {
         base.DargUpdate(position);
         LevelManager.Instance.ColorDragUpdate(position);
