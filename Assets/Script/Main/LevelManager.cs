@@ -29,11 +29,6 @@ public class LevelManager : MonoBehaviour
     int InitBlockNum = 5;
     float allColorRate = 0.1f;
 
-    private void Awake()
-    {
-
-    }
-
     public void InitLevel()
     {
         blocks = new List<Block>();
@@ -144,6 +139,7 @@ public class LevelManager : MonoBehaviour
         return isMoving;
     }
 
+    #region 消除判断
     /// <summary>
     /// 检查是否有可消除的block
     /// </summary>
@@ -211,21 +207,9 @@ public class LevelManager : MonoBehaviour
             return true;
         return a.color == b.color;
     }
+    #endregion
 
-    public void LevelFailur()
-    {
-
-    }
-
-    public void ReDo()
-    {
-
-    }
-
-    private Block FindBlock(int x, int y)
-    {
-        return blocks.Find(block => block.x == x && block.y == y);
-    }
+    #region 生成block
 
     private void CreateRandomBlock()
     {
@@ -264,6 +248,43 @@ public class LevelManager : MonoBehaviour
         }
 
     }
+    #endregion
 
+    #region 道具逻辑
+    public void ColorDragUpdate(Vector2 position)
+    {
 
+    }
+
+    public void ColorDragEnd()
+    {
+
+    }
+
+    public void BombDragUpdate(Vector3 position)
+    {
+
+    }
+
+    public void BombDragEnd()
+    {
+
+    }
+
+    #endregion
+
+    public void LevelFailur()
+    {
+
+    }
+
+    public void ReDo()
+    {
+
+    }
+
+    private Block FindBlock(int x, int y)
+    {
+        return blocks.Find(block => block.x == x && block.y == y);
+    }
 }

@@ -64,7 +64,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         offset = Vector2.zero;
     }
 
-    public virtual void DargUpdate(Vector3 position)
+    public virtual void DargUpdate(Vector2 position)
     { }
 
     public virtual void EndDrag()

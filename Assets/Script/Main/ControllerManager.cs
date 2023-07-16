@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class ControllerManager : MonoBehaviour
 {
+    public GameObject color, bomb;
+    GameObject tempTools;//¡Ÿ ±µ¿æﬂ
+    public Transform colorRect, bombRect;
+
     private static ControllerManager instance;
     public static ControllerManager Instance
     {
@@ -40,9 +44,19 @@ public class ControllerManager : MonoBehaviour
 
     }
 
+    public void OnColorDragEnd()
+    {
+        color.transform.position = Vector3.zero;
+    }
+
     public void OnBombClick()
     {
 
+    }
+
+    public void OnBombDragEnd()
+    {
+        bomb.transform.position = Vector3.zero;
     }
 
     public void OnRedoClick()

@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class Block : MonoBehaviour
 {
     public BlockColor color;
-    public GameObject shadow;
+    public GameObject bombObj, colorObj;
+    public float distance;//用于计算与拖动时与手指之间的距离
     public int x, y;
     Image image;
 
@@ -44,9 +45,21 @@ public class Block : MonoBehaviour
         iTween.MoveFrom(gameObject, oldPosition, CONST.MoveAnimationTime);
     }
 
-    public void ShowShadow(bool isShow)
+    public void ShowColor(bool isShow)
     {
-        shadow.gameObject.SetActive(isShow);
+        SetAlpha(isShow ? 0 : 1);
+        colorObj.gameObject.SetActive(isShow);
+    }
+
+    public void ShowBomb(bool isShow)
+    {
+        SetAlpha(isShow ? 0 : 1);
+        bombObj.gameObject.SetActive(isShow);
+    }
+
+    private void SetAlpha(float a)
+    {
+        image.color = new Color(1, 1, 1, a);
     }
 
     private void ShowSpwanAnimation()
