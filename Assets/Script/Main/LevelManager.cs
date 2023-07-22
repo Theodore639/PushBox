@@ -149,8 +149,6 @@ public class LevelManager : MonoBehaviour
                     blockState[i, j] = 0;
             foreach (Block block in blocks)
                 blockState[block.x, block.y] = 1;
-            ControllerManager.Instance.SetRedoActive(true);
-
         }
         return isMoving;
     }
@@ -300,7 +298,6 @@ public class LevelManager : MonoBehaviour
                     mapState = MapState.Wait;
                 });
             }
-            ControllerManager.Instance.SetRedoActive(false);
         }
         ControllerManager.Instance.color.transform.localPosition = Vector3.zero;
     }
@@ -323,14 +320,25 @@ public class LevelManager : MonoBehaviour
                 block.ChangeToBomb();
                 blockState[block.x, block.y] = 0;
             }
-            ControllerManager.Instance.SetRedoActive(false);
         }
         ControllerManager.Instance.bomb.transform.localPosition = Vector3.zero;
     }
 
-    public void ReDo()
+    public void RandomBlock()
     {
-
+        List<int> randomList = new List<int>();
+        for (int i = 0; i < MaxX * MaxY; i++)
+            randomList.Add(i);
+        foreach (Block block in blocks)
+        {
+            int random = randomList[Random.Range(0, randomList.Count)];
+            blockState[block.x, block.y] = 0;
+            block.x = random / MaxX;
+            block.y = random % MaxX;
+            blockState[block.x, block.y] = 1;
+            block.MoveTo(block.x, block.y);
+            randomList.Remove(random);
+        }
     }
 
     #endregion

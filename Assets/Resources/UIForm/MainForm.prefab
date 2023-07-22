@@ -644,7 +644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {fileID: 401701319126378765}
   bomb: {fileID: 4736810031891681912}
-  redoButton: {fileID: 5341665105115624315}
+  randomButton: {fileID: 0}
   colorRect: {fileID: 7130835411127843479}
   bombRect: {fileID: 4417448358246830942}
 --- !u!1 &94292604681065478
@@ -1454,7 +1454,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 2811378087126646870}
   m_OnClick:
     m_PersistentCalls:
@@ -1714,7 +1714,7 @@ GameObject:
   - component: {fileID: 1040946306209729141}
   - component: {fileID: 53721936367444392}
   m_Layer: 0
-  m_Name: Redo
+  m_Name: Random
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

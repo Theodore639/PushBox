@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ControllerManager : MonoBehaviour
 {
     public GameObject color, bomb;
-    public Button redoButton;
+    public Button randomButton;
     public Transform colorRect, bombRect;
 
     private static ControllerManager instance;
@@ -60,15 +60,15 @@ public class ControllerManager : MonoBehaviour
         bomb.transform.position = Vector3.zero;
     }
 
-    public void OnRedoClick()
+    public void OnRandomClick()
     {
-
+        LevelManager.Instance.RandomBlock();
     }
 
-    public void SetRedoActive(bool isActive)
+    public void SetRandomActive(bool isActive)
     {
-        redoButton.interactable = isActive;
-        redoButton.transform.Find("Redo").GetComponent<Image>().color = new Color(1, 1, 1, isActive ? 1 : 0.5f);
+        randomButton.interactable = isActive;
+        randomButton.transform.Find("Random").GetComponent<Image>().color = new Color(1, 1, 1, isActive ? 1 : 0.5f);
     }
 
 }
