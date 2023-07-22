@@ -331,14 +331,27 @@ public class LevelManager : MonoBehaviour
             randomList.Add(i);
         foreach (Block block in blocks)
         {
-            int random = randomList[Random.Range(0, randomList.Count)];
             blockState[block.x, block.y] = 0;
+        }
+        foreach (Block block in blocks)
+        {
+            int random = randomList[Random.Range(0, randomList.Count)];
             block.x = random / MaxX;
             block.y = random % MaxX;
             blockState[block.x, block.y] = 1;
             block.MoveTo(block.x, block.y);
             randomList.Remove(random);
         }
+        if (CheckMap())
+        {
+            mapState = MapState.Cleaning;
+            Timer.Schedule(this, CONST.ClearAnimationTime, () =>
+            {
+                mapState = MapState.Wait;
+            });
+        }
+        hintBlocks = MapHelper.PredictionMap(blocks);
+        hintDeltaTime = 0;
     }
 
     #endregion

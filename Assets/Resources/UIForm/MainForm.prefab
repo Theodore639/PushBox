@@ -1461,7 +1461,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 94292604578957127}
         m_TargetAssemblyTypeName: ControllerManager, Assembly-CSharp
-        m_MethodName: OnRedoClick
+        m_MethodName: OnRandomClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
