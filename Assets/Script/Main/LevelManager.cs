@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -20,9 +21,10 @@ public class LevelManager : MonoBehaviour
     public GameObject[] bgTransform;
     public List<Sprite> spriteList;
     public Sprite allColor;
-    public GameObject blockPrefab;
+    public GameObject blockPrefab, scoreTextPrefab;
     public List<Block> blocks;
     public List<Block> hintBlocks;
+    public Text scoreText;
     public MapState mapState;
     int[,] blockState;//0空，非0，用于计算分数
     public static int MaxX = 5;
@@ -47,6 +49,7 @@ public class LevelManager : MonoBehaviour
         blocks = new List<Block>();
         blockState = new int[MaxX, MaxY];
         score = 0;
+        UpdateScoreText();
         for (int i = 0; i < InitBlockNum; i++)
         {
             CreateRandomBlock();
@@ -183,18 +186,34 @@ public class LevelManager : MonoBehaviour
             if (blockState[block.x, block.y] > 1)
             {
                 scorePoint += blockState[block.x, block.y] - 1;
-                if (blockState[block.x, block.y] >= 3)
-                    scorePoint += 2;
+                //if (blockState[block.x, block.y] >= 3)
+                //    scorePoint += 2;
                 clearList.Add(block);
                 blockState[block.x, block.y] = 0;
                 isClear = true;
             }
         }
-        for (int i = clearList.Count - 1; i >= 0; i--)
+        if (scorePoint > 0)
         {
-            clearList[i].Clear();
+            score += scorePoint * 10;
+            GameObject socreText = Instantiate(scoreTextPrefab, transform);
+            socreText.GetComponent<Text>().text = "+" + scorePoint * 10;
+            Vector3 position = Vector3.zero;
+            for (int i = clearList.Count - 1; i >= 0; i--)
+            {
+                position += clearList[i].transform.position;
+                clearList[i].Clear();
+            }
+            socreText.transform.position = position / clearList.Count + new Vector3(100, 100, 0);
+            Destroy(socreText, 1.5f);
+            UpdateScoreText();
         }
         return isClear;
+    }
+
+    private void UpdateScoreText()
+    {
+        scoreText.text = "得分：" + score.ToString();
     }
 
     private void CheckBlock(Block block)
