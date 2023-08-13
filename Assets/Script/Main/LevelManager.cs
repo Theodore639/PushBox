@@ -17,23 +17,33 @@ public class LevelManager : MonoBehaviour
         }
     }
     public int score;
-
+    public GameObject[] bgTransform;
     public List<Sprite> spriteList;
     public Sprite allColor;
-    public GameObject block;
+    public GameObject blockPrefab;
     public List<Block> blocks;
     public List<Block> hintBlocks;
     public MapState mapState;
     int[,] blockState;//0空，非0，用于计算分数
     public static int MaxX = 5;
     public static int MaxY = 5;
+    public int level;
     int InitBlockNum = 5;
     float allColorRate = 0.05f;
     float hintTime = 5;
     float hintDeltaTime = 0;
 
-    public void InitLevel()
+    public void InitLevel(int _level)
     {
+        level = _level;
+        bgTransform[0].SetActive(level == 0);
+        bgTransform[1].SetActive(level == 1);
+        int length = level == 0 ? 4 : 5;
+        MaxX = length;
+        MaxY = length;
+        for (int i = blocks.Count - 1; i >= 0; i--)
+            Destroy(blocks[i].gameObject);
+
         blocks = new List<Block>();
         blockState = new int[MaxX, MaxY];
         score = 0;
@@ -95,6 +105,7 @@ public class LevelManager : MonoBehaviour
             hintBlocks = MapHelper.PredictionMap(blocks);
             hintDeltaTime = 0;
         }
+        CheckFailur();
         yield return 0;
     }
 
@@ -227,13 +238,25 @@ public class LevelManager : MonoBehaviour
 
     private void CreateRandomBlock()
     {
-        Block b = Instantiate(block, transform).GetComponent<Block>();
+        Block b = Instantiate(blockPrefab, transform).GetComponent<Block>();
         int x = 0;
         int y = 0;
         GetRandomEmptyPosition(ref x, ref y);
-        b.OnSpwan(GetRandomColor(), x, y);
+        b.OnSpwan(GetColor(), x, y);
         blockState[x, y] = 1;
         blocks.Add(b);
+    }
+
+    private BlockColor GetColor()
+    {
+        if (level == 0)
+        {
+            return (BlockColor)Random.Range(0, (int)BlockColor.Green);
+        }
+        else
+        {
+            return GetRandomColor();
+        }
     }
 
     private BlockColor GetRandomColor()
@@ -356,9 +379,20 @@ public class LevelManager : MonoBehaviour
 
     #endregion
 
-    public void LevelFailur()
+    public void CheckFailur()
     {
-
+        bool isFailur = true;
+        for (int i = 0; i < MaxX; i++)
+            for (int j = 0; j < MaxY; j++)
+                if (blockState[i, j] == 0)
+                {
+                    isFailur = false;
+                    break;
+                }
+        if (isFailur)
+        {
+            FailureForm.Instance.Show();
+        }
     }
 
     public Block FindBlock(int x, int y)

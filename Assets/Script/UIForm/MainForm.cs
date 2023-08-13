@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainForm : MonoBehaviour
+public class MainForm : BaseForm
 {
     private static MainForm instance;
     public static MainForm Instance

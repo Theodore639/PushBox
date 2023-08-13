@@ -6,11 +6,11 @@ public class BaseForm : MonoBehaviour
 {
     public virtual void Show()
     {
-
+        transform.SetAsLastSibling();
     }
 
-    public virtual void Close()
+    public virtual void Hide()
     {
-
+        transform.SetAsFirstSibling();
     }
 }

@@ -24,9 +24,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.InitLevel();
+
     }
 
+    public void StartGame(int level)
+    {
+        LevelManager.Instance.InitLevel(level);
+    }
+
+    public void GameOver()
+    {
+
+    }
 
     public void GamePause()
     {

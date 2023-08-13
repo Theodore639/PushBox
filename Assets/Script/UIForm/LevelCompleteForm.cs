@@ -7,13 +7,13 @@ public class LevelCompleteForm : BaseForm
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void OnNextClick()
@@ -21,8 +21,4 @@ public class LevelCompleteForm : BaseForm
 
     }
 
-    public void OnLevelSelectClick()
-    {
-
-    }
 }

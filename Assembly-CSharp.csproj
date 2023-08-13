@@ -71,8 +71,10 @@
     <Compile Include="Assets\Script\Main\GameManager.cs" />
     <Compile Include="Assets\Script\UIForm\BaseForm.cs" />
     <Compile Include="Assets\Script\Main\Item\DragBomb.cs" />
-    <Compile Include="Assets\Script\UIForm\LevelFailureForm.cs" />
+    <Compile Include="Assets\Script\UIForm\FailureForm.cs" />
     <Compile Include="Assets\Script\Main\Item\DragItem.cs" />
+    <Compile Include="Assets\Script\Main\SoundManager.cs" />
+    <Compile Include="Assets\Script\UIForm\StartForm.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\GUIPackCartoon\Demo\Fonts\BPreplay - OFL.txt" />
